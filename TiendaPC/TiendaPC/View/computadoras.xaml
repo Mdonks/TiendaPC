@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TiendaPC.computadoras" Title="Computadora">
+    <ContentPage.Content>
+        <StackLayout Padding="10">
+            <Entry x:Name="nombreEntry" Placeholder="Nombre" />
+            <Entry x:Name="marcaEntry" Placeholder="Marca" />
+            <Entry x:Name="precioEntry" Placeholder="Precio" Keyboard="Numeric" />
+            <Entry x:Name="stockEntry" Placeholder="Stock" Keyboard="Numeric" />
+
+            <Button Text="Guardar"/>
+
+            <ListView x:Name="computadorasListView" ItemsSource="{Binding Computadoras}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="{Binding nombre}" FontAttributes="Bold" />
+                                <Label Text="{Binding marca}" />
+                                <Label Text="{Binding precio, StringFormat='Precio: ${0:N2}'}" />
+                                <Label Text="{Binding stock, StringFormat='Stock: {0} unidades'}" />
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TiendaPC.pedidos" Title="Pedidos">
+    <ContentPage.Content>
+        <StackLayout Padding="10">
+            <Label Text="Lista de Pedidos" FontSize="Large" HorizontalOptions="Center" Margin="0,10,0,10" />
+
+            <ListView x:Name="pedidosListView" IsVisible="{Binding TienePedidos}" ItemsSource="{Binding Pedidos}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="{Binding id}" FontAttributes="Bold" />
+                                <Label Text="{Binding fecha}" />
+                                <Label Text="{Binding total, StringFormat='Total: ${0:N2}'}" />
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Label Text="No hay pedidos disponibles" IsVisible="{Binding NoHayPedidos}" FontAttributes="Italic" HorizontalOptions="Center" Margin="0,20,0,0" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TiendaPC.usuarios" Title="Usuarios"
+             xmlns:vm="clr-namespace:TiendaPC.ViewModels">
+    <ContentPage.BindingContext>
+        <vm:UsuarioVM />
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <StackLayout Padding="10">
+            <Entry x:Name="nombreEntry" Placeholder="Nombre" Text="{Binding Nombre, Mode=TwoWay}" />
+            <Entry x:Name="direccionEntry" Placeholder="Dirección" Text="{Binding Direccion, Mode=TwoWay}" />
+            <Entry x:Name="correoEntry" Placeholder="Correo electrónico" Text="{Binding Correo, Mode=TwoWay}" />
+
+            <Button Text="Guardar" Command="{Binding CrearUsuario}" />
+
+            <ListView x:Name="usuariosListView" ItemsSource="{Binding Usuarios}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label Text="{Binding Nombre}" FontAttributes="Bold" />
+                                <Label Text="{Binding Direccion}" />
+                                <Label Text="{Binding Correo}" />
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
+
+
