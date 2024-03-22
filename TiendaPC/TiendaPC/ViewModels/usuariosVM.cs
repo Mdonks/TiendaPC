@@ -1,29 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using TiendaPC.Models;
 using Xamarin.Forms;
+
 
 namespace TiendaPC.ViewModels
 {
     public class UsuarioVM : INotifyPropertyChanged
     {
         private readonly HttpClient _client = new HttpClient();
-        private const string BaseUrl = "https://apex.oracle.com/pls/apex/smeargle1628/api_tienda_pc/";
+        private const string BaseUrl = "https://apex.oracle.com/pls/apex/smeargle1628/api_tienda_pc";
 
         public UsuarioVM()
         {
             CrearUsuario = new Command(async () =>
             {
                 string url = $"{BaseUrl}/usuarios";
-                var nuevoUsuario = new Usuario
+                var nuevoUsuario = new USUARIO
                 {
-                    Nombre = Nombre,
-                    Direccion = Direccion,
-                    Correo = Correo
+                    nombre = Nombre,
+                    direccion = Direccion,
+                    correo = Correo
                 };
 
                 var json = JsonConvert.SerializeObject(nuevoUsuario);
@@ -35,6 +38,9 @@ namespace TiendaPC.ViewModels
                     Result = "Usuario creado exitosamente.";
                     // Actualizar lista de usuarios después de crear uno nuevo
                     ObtenerUsuarios();
+                    Nombre = string.Empty;
+                    Direccion = string.Empty;
+                    Correo = string.Empty;
                 }
                 else
                 {
@@ -54,11 +60,15 @@ namespace TiendaPC.ViewModels
                 if (response.IsSuccessStatusCode)
                 {
                     string content = await response.Content.ReadAsStringAsync();
-                    Usuarios = JsonConvert.DeserializeObject<List<Usuario>>(content);
+                    Usuarios = JsonConvert.DeserializeObject<List<USUARIO>>(content);
+                    foreach (var usuario in Usuarios)
+                    {
+                        Debug.WriteLine($"ID: {usuario.id}, Nombre: {usuario.nombre}, Dirección: {usuario.direccion}, Correo: {usuario.correo}");
+                    }
                 }
                 else
                 {
-                    // Manejar error al obtener usuarios
+                    Result = "Error al traer los usuarios";
                 }
             }
             catch (Exception ex)
@@ -67,8 +77,8 @@ namespace TiendaPC.ViewModels
             }
         }
 
-        private List<Usuario> _usuarios;
-        public List<Usuario> Usuarios
+        private List<USUARIO> _usuarios;
+        public List<USUARIO> Usuarios
         {
             get => _usuarios;
             set
@@ -127,12 +137,12 @@ namespace TiendaPC.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
     }
 
-    public class Usuario
-    {
-        public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string Direccion { get; set; }
-        public string Correo { get; set; }
+    public class USUARIO
+    {   
+        public string id{ get; set; }
+        public string nombre { get; set; }
+        public string direccion { get; set; }
+        public string correo { get; set; }
     }
 }
 

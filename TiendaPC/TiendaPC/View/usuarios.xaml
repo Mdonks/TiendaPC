@@ -8,9 +8,9 @@
     </ContentPage.BindingContext>
     <ContentPage.Content>
         <StackLayout Padding="10">
-            <Entry x:Name="nombreEntry" Placeholder="Nombre" Text="{Binding Nombre, Mode=TwoWay}" />
-            <Entry x:Name="direccionEntry" Placeholder="Dirección" Text="{Binding Direccion, Mode=TwoWay}" />
-            <Entry x:Name="correoEntry" Placeholder="Correo electrónico" Text="{Binding Correo, Mode=TwoWay}" />
+            <Entry x:Name="nombreEntry" Placeholder="Nombre" Text="{Binding Nombre}" />
+            <Entry x:Name="direccionEntry" Placeholder="Dirección" Text="{Binding Direccion}" />
+            <Entry x:Name="correoEntry" Placeholder="Correo electrónico" Text="{Binding Correo}" />
 
             <Button Text="Guardar" Command="{Binding CrearUsuario}" />
 
