@@ -12,7 +12,10 @@
             <Entry x:Name="direccionEntry" Placeholder="Dirección" Text="{Binding Direccion}" />
             <Entry x:Name="correoEntry" Placeholder="Correo electrónico" Text="{Binding Correo}" />
 
-            <Button Text="Guardar" Command="{Binding CrearUsuario}" />
+            <Button Text="Guardar" Command="{Binding CrearUsuario}"/>
+            <Button Text="Actualizar" Command="{Binding ActualizarUsuario}" />
+            <Button Text="Eliminar" Command="{Binding EliminarUsuario}" />
+
 
             <ListView x:Name="usuariosListView" ItemsSource="{Binding Usuarios}">
                 <ListView.ItemTemplate>

@@ -9,7 +9,6 @@ using Newtonsoft.Json;
 using TiendaPC.Models;
 using Xamarin.Forms;
 
-
 namespace TiendaPC.ViewModels
 {
     public class UsuarioVM : INotifyPropertyChanged
@@ -45,6 +44,42 @@ namespace TiendaPC.ViewModels
                 else
                 {
                     Result = "Error al crear el usuario.";
+                }
+            });
+
+            ActualizarUsuario = new Command(async () =>
+            {
+                string url = $"{BaseUrl}/usuarios/{UsuarioSeleccionado.id}";
+                var json = JsonConvert.SerializeObject(UsuarioSeleccionado);
+                var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await _client.PutAsync(url, data);
+                if (response.IsSuccessStatusCode)
+                {
+                    Result = "Usuario actualizado exitosamente.";
+                    // Actualizar lista de usuarios después de actualizar uno
+                    ObtenerUsuarios();
+                }
+                else
+                {
+                    Result = "Error al actualizar el usuario.";
+                }
+            });
+
+            EliminarUsuario = new Command(async () =>
+            {
+                string url = $"{BaseUrl}/usuarios/{UsuarioSeleccionado.id}";
+
+                HttpResponseMessage response = await _client.DeleteAsync(url);
+                if (response.IsSuccessStatusCode)
+                {
+                    Result = "Usuario eliminado exitosamente.";
+                    // Actualizar lista de usuarios después de eliminar uno
+                    ObtenerUsuarios();
+                }
+                else
+                {
+                    Result = "Error al eliminar el usuario.";
                 }
             });
 
@@ -121,6 +156,17 @@ namespace TiendaPC.ViewModels
             }
         }
 
+        private USUARIO _usuarioSeleccionado;
+        public USUARIO UsuarioSeleccionado
+        {
+            get => _usuarioSeleccionado;
+            set
+            {
+                _usuarioSeleccionado = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UsuarioSeleccionado)));
+            }
+        }
+
         private string _result;
         public string Result
         {
@@ -133,17 +179,14 @@ namespace TiendaPC.ViewModels
         }
 
         public Command CrearUsuario { get; }
+        public Command ActualizarUsuario { get; }
+        public Command EliminarUsuario { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
     }
-
-    public class USUARIO
-    {   
-        public string id{ get; set; }
-        public string nombre { get; set; }
-        public string direccion { get; set; }
-        public string correo { get; set; }
-    }
 }
+
+
+
 
 
