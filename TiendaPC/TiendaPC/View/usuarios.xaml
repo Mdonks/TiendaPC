@@ -4,7 +4,7 @@
              x:Class="TiendaPC.usuarios" Title="Usuarios"
              xmlns:vm="clr-namespace:TiendaPC.ViewModels">
     <ContentPage.BindingContext>
-        <vm:UsuarioVM />
+        <vm:UsuarioViewModel></vm:UsuarioViewModel>
     </ContentPage.BindingContext>
     <ContentPage.Content>
         <StackLayout Padding="10">
@@ -12,24 +12,42 @@
             <Entry x:Name="direccionEntry" Placeholder="Dirección" Text="{Binding Direccion}" />
             <Entry x:Name="correoEntry" Placeholder="Correo electrónico" Text="{Binding Correo}" />
 
-            <Button Text="Guardar" Command="{Binding CrearUsuario}"/>
-            <Button Text="Actualizar" Command="{Binding ActualizarUsuario}" />
-            <Button Text="Eliminar" Command="{Binding EliminarUsuario}" />
+            <Button Text="Guardar" Command="{Binding AgregarUsuarioCommand}"/>
+            <Button Text="Actualizar" Command="{Binding ActualizarUsuarioCommand}" />
+            <Button Text="Eliminar" Command="{Binding EliminarUsuarioCommand}" />
 
 
-            <ListView x:Name="usuariosListView" ItemsSource="{Binding Usuarios}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <StackLayout Padding="10">
-                                <Label Text="{Binding Nombre}" FontAttributes="Bold" />
-                                <Label Text="{Binding Direccion}" />
-                                <Label Text="{Binding Correo}" />
-                            </StackLayout>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <Label Text="Lista de Usuarios" FontSize="20" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" Margin="0,10,0,10" />
+            <ScrollView Orientation="Horizontal">
+                <ListView x:Name="usuariosListView" 
+              ItemsSource="{Binding Usuarios}" 
+              HeightRequest="400" 
+              VerticalOptions="FillAndExpand"
+              SeparatorVisibility="None"
+              ItemSelected="OnItemSelected">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal" Padding="10">
+                                    <Label Text="{Binding nombre}" 
+                               FontAttributes="Bold" 
+                               FontSize="Medium" 
+                               TextColor="white"
+                               VerticalOptions="Start" />
+                                    <Label Text="{Binding direccion}" 
+                               FontSize="Small" 
+                               TextColor="#999999"
+                               VerticalOptions="CenterAndExpand" />
+                                    <Label Text="{Binding correo}" 
+                               FontSize="Small" 
+                               TextColor="#999999"
+                               VerticalOptions="CenterAndExpand" />
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ScrollView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

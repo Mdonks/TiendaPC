@@ -1,125 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Newtonsoft.Json;
 using TiendaPC.Models;
 using Xamarin.Forms;
 
 namespace TiendaPC.ViewModels
 {
-    public class UsuarioVM : INotifyPropertyChanged
+    public class UsuarioViewModel : INotifyPropertyChanged
     {
-        private readonly HttpClient _client = new HttpClient();
-        private const string BaseUrl = "https://apex.oracle.com/pls/apex/smeargle1628/api_tienda_pc";
 
-        public UsuarioVM()
+        public ObservableCollection<USUARIO> Usuarios { get; set; } = new ObservableCollection<USUARIO>();
+        public ICommand AgregarUsuarioCommand { get; }
+        public ICommand EliminarUsuarioCommand { get; }
+        public ICommand ActualizarUsuarioCommand { get; }
+
+        private USUARIO _usuarioSeleccionado;
+        public USUARIO UsuarioSeleccionado
         {
-            CrearUsuario = new Command(async () =>
-            {
-                string url = $"{BaseUrl}/usuarios";
-                var nuevoUsuario = new USUARIO
-                {
-                    nombre = Nombre,
-                    direccion = Direccion,
-                    correo = Correo
-                };
-
-                var json = JsonConvert.SerializeObject(nuevoUsuario);
-                var data = new StringContent(json, Encoding.UTF8, "application/json");
-
-                HttpResponseMessage response = await _client.PostAsync(url, data);
-                if (response.IsSuccessStatusCode)
-                {
-                    Result = "Usuario creado exitosamente.";
-                    // Actualizar lista de usuarios después de crear uno nuevo
-                    ObtenerUsuarios();
-                    Nombre = string.Empty;
-                    Direccion = string.Empty;
-                    Correo = string.Empty;
-                }
-                else
-                {
-                    Result = "Error al crear el usuario.";
-                }
-            });
-
-            ActualizarUsuario = new Command(async () =>
-            {
-                string url = $"{BaseUrl}/usuarios/{UsuarioSeleccionado.id}";
-                var json = JsonConvert.SerializeObject(UsuarioSeleccionado);
-                var data = new StringContent(json, Encoding.UTF8, "application/json");
-
-                HttpResponseMessage response = await _client.PutAsync(url, data);
-                if (response.IsSuccessStatusCode)
-                {
-                    Result = "Usuario actualizado exitosamente.";
-                    // Actualizar lista de usuarios después de actualizar uno
-                    ObtenerUsuarios();
-                }
-                else
-                {
-                    Result = "Error al actualizar el usuario.";
-                }
-            });
-
-            EliminarUsuario = new Command(async () =>
-            {
-                string url = $"{BaseUrl}/usuarios/{UsuarioSeleccionado.id}";
-
-                HttpResponseMessage response = await _client.DeleteAsync(url);
-                if (response.IsSuccessStatusCode)
-                {
-                    Result = "Usuario eliminado exitosamente.";
-                    // Actualizar lista de usuarios después de eliminar uno
-                    ObtenerUsuarios();
-                }
-                else
-                {
-                    Result = "Error al eliminar el usuario.";
-                }
-            });
-
-            // Obtener lista de usuarios al inicio
-            ObtenerUsuarios();
-        }
-
-        private async void ObtenerUsuarios()
-        {
-            try
-            {
-                HttpResponseMessage response = await _client.GetAsync($"{BaseUrl}/usuarios");
-                if (response.IsSuccessStatusCode)
-                {
-                    string content = await response.Content.ReadAsStringAsync();
-                    Usuarios = JsonConvert.DeserializeObject<List<USUARIO>>(content);
-                    foreach (var usuario in Usuarios)
-                    {
-                        Debug.WriteLine($"ID: {usuario.id}, Nombre: {usuario.nombre}, Dirección: {usuario.direccion}, Correo: {usuario.correo}");
-                    }
-                }
-                else
-                {
-                    Result = "Error al traer los usuarios";
-                }
-            }
-            catch (Exception ex)
-            {
-                // Manejar excepción
-            }
-        }
-
-        private List<USUARIO> _usuarios;
-        public List<USUARIO> Usuarios
-        {
-            get => _usuarios;
+            get => _usuarioSeleccionado;
             set
             {
-                _usuarios = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Usuarios)));
+                _usuarioSeleccionado = value;
+                var args = new PropertyChangedEventArgs(nameof(UsuarioSeleccionado));
+                PropertyChanged?.Invoke(this, args);
             }
         }
 
@@ -130,7 +41,8 @@ namespace TiendaPC.ViewModels
             set
             {
                 _nombre = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Nombre)));
+                var args = new PropertyChangedEventArgs(nameof(Nombre));
+                PropertyChanged?.Invoke(this, args);
             }
         }
 
@@ -141,7 +53,8 @@ namespace TiendaPC.ViewModels
             set
             {
                 _direccion = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Direccion)));
+                var args = new PropertyChangedEventArgs(nameof(Direccion));
+                PropertyChanged?.Invoke(this, args);
             }
         }
 
@@ -152,37 +65,181 @@ namespace TiendaPC.ViewModels
             set
             {
                 _correo = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Correo)));
+                var args = new PropertyChangedEventArgs(nameof(Correo));
+                PropertyChanged?.Invoke(this, args);
             }
         }
 
-        private USUARIO _usuarioSeleccionado;
-        public USUARIO UsuarioSeleccionado
+        public void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            get => _usuarioSeleccionado;
-            set
-            {
-                _usuarioSeleccionado = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UsuarioSeleccionado)));
-            }
+            if (e.SelectedItem == null)
+                return;
+
+            UsuarioSeleccionado = (USUARIO)e.SelectedItem;
+
+            Nombre = UsuarioSeleccionado.nombre;
+            Direccion = UsuarioSeleccionado.direccion;
+            Correo = UsuarioSeleccionado.correo;
+
+            ((ListView)sender).SelectedItem = null;
         }
 
-        private string _result;
-        public string Result
+        public UsuarioViewModel()
         {
-            get => _result;
-            set
+            Usuarios = new ObservableCollection<USUARIO>();
+            AgregarUsuarioCommand = new Command(async () => await AgregarUsuario());
+            EliminarUsuarioCommand = new Command(async () => await EliminarUsuario());
+            ActualizarUsuarioCommand = new Command(async () => await ActualizarUsuario());
+            CargarUsuarios();
+        }
+
+        private async Task AgregarUsuario()
+        {
+            string Url = "https://apex.oracle.com/pls/apex/smeargle1628/api_tienda_pc";
+
+            try
             {
-                _result = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Result)));
+                string addUrl = $"{Url}/usuarios";
+
+                ConsumoServicios servicios = new ConsumoServicios(Url);
+                var exito = await servicios.AgregarUsuario(addUrl, Nombre, Direccion, Correo);
+
+                if (exito)
+                {
+                    await App.Current.MainPage.DisplayAlert("Éxito", "Usuario ingresado correctamente", "Aceptar");
+
+                    Nombre = string.Empty;
+                    Direccion = string.Empty;
+                    Correo = string.Empty;
+
+                    await CargarUsuarios();
+                }
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("Error", "No se pudo ingresar el usuario", "Aceptar");
+                }
+            }
+            catch (Exception ex)
+            {
+                await App.Current.MainPage.DisplayAlert("Error", "Ha ocurrido un error al agregar el usuario", "Aceptar");
             }
         }
 
-        public Command CrearUsuario { get; }
-        public Command ActualizarUsuario { get; }
-        public Command EliminarUsuario { get; }
+
+        private async Task EliminarUsuario()
+        {
+            string Url = "https://apex.oracle.com/pls/apex/smeargle1628/api_tienda_pc/usuarios";
+
+            try
+            {
+                if (UsuarioSeleccionado != null)
+                {
+                    string deleteUrl = $"{Url}?id={UsuarioSeleccionado.id}";
+
+                    ConsumoServicios servicios = new ConsumoServicios(Url);
+                    var exito = await servicios.Eliminar(deleteUrl);
+
+                    if (exito)
+                    {
+                        Nombre = string.Empty;
+                        Direccion = string.Empty;
+                        Correo = string.Empty;
+                        Usuarios.Remove(UsuarioSeleccionado);
+                        await App.Current.MainPage.DisplayAlert("Éxito", "Usuario eliminado correctamente", "Aceptar");
+                    }
+                    else
+                    {
+                        await App.Current.MainPage.DisplayAlert("Error", "No se pudo eliminar el usuario", "Aceptar");
+                    }
+                }
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("Alerta", "Por favor, seleccione un usuario", "Aceptar");
+                }
+            }
+            catch (Exception ex)
+            {
+                await App.Current.MainPage.DisplayAlert("Error", "Ha ocurrido un error al eliminar el usuario", "Aceptar");
+            }
+        }
+
+
+        private async Task ActualizarUsuario()
+        {
+            string Url = "https://apex.oracle.com/pls/apex/smeargle1628/api_tienda_pc";
+
+            try
+            {
+                if (UsuarioSeleccionado != null)
+                {
+                    UsuarioSeleccionado.nombre = Nombre;
+                    UsuarioSeleccionado.direccion = Direccion;
+                    UsuarioSeleccionado.correo = Correo;
+
+                    ConsumoServicios servicios = new ConsumoServicios(Url);
+                    var updateUrl = $"{Url}/usuarios";
+                    var exito = await servicios.ActualizarUsuario(updateUrl, UsuarioSeleccionado);
+
+                    if (exito)
+                    {
+                        Nombre = string.Empty;
+                        Direccion = string.Empty;
+                        Correo = string.Empty;
+                        await CargarUsuarios();
+                        await App.Current.MainPage.DisplayAlert("Éxito", "Usuario actualizado correctamente", "Aceptar");
+                    }
+                    else
+                    {
+                        await App.Current.MainPage.DisplayAlert("Error", "No se pudo actualizar el usuario", "Aceptar");
+                    }
+                }
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("Alerta", "Por favor, seleccione un usuario", "Aceptar");
+                }
+            }
+            catch (Exception ex)
+            {
+                await App.Current.MainPage.DisplayAlert("Error", "Ha ocurrido un error al actualizar el usuario", "Aceptar");
+            }
+        }
+
+        private async Task CargarUsuarios()
+        {
+            string url = "https://apex.oracle.com/pls/apex/smeargle1628/api_tienda_pc/usuarios";
+
+            try
+            {
+                ConsumoServicios servicios = new ConsumoServicios(url);
+                var response = await servicios.Get<USUARIORESPONSE>();
+
+                Usuarios.Clear();
+
+                foreach (USUARIO x in response.items)
+                {
+                    USUARIO temp = new USUARIO()
+                    {
+                        id = x.id,
+                        nombre = x.nombre,
+                        direccion = x.direccion,
+                        correo = x.correo,
+                    };
+
+                    Usuarios.Add(temp);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error al obtener usuarios: " + ex.Message);
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }
 
