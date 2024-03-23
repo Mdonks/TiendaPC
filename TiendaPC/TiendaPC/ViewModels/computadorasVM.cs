@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Net.Http;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Newtonsoft.Json;
@@ -83,10 +80,10 @@ namespace TiendaPC.ViewModels
 
             ComputadoraSeleccionada = (Computadora)e.SelectedItem;
 
-            Nombre = ComputadoraSeleccionada.Nombre;
-            Marca = ComputadoraSeleccionada.Marca;
-            Precio = ComputadoraSeleccionada.Precio;
-            Stock = ComputadoraSeleccionada.Stock;
+            Nombre = ComputadoraSeleccionada.nombre;
+            Marca = ComputadoraSeleccionada.marca;
+            Precio = ComputadoraSeleccionada.precio;
+            Stock = ComputadoraSeleccionada.stock;
 
             ((ListView)sender).SelectedItem = null;
         }
@@ -111,13 +108,13 @@ namespace TiendaPC.ViewModels
                 ConsumoServicios servicios = new ConsumoServicios(Url);
                 var computadora = new Computadora
                 {
-                    Nombre = Nombre,
-                    Marca = Marca,
-                    Precio = Precio,
-                    Stock = Stock
+                    nombre = Nombre,
+                    marca = Marca,
+                    precio = Precio,
+                    stock = Stock
                 };
 
-                var exito = await servicios.AgregarComputadora(addUrl, computadora);
+                var exito = await servicios.AgregarComputadora(addUrl, computadora.nombre, computadora.marca, computadora.precio, computadora.stock);
 
                 if (exito)
                 {
@@ -141,6 +138,7 @@ namespace TiendaPC.ViewModels
             }
         }
 
+
         private async Task EliminarComputadora()
         {
             string Url = "https://apex.oracle.com/pls/apex/smeargle1628/api_tienda_pc/computadoras";
@@ -149,7 +147,7 @@ namespace TiendaPC.ViewModels
             {
                 if (ComputadoraSeleccionada != null)
                 {
-                    string deleteUrl = $"{Url}/{ComputadoraSeleccionada.Id}";
+                    string deleteUrl = $"{Url}/{ComputadoraSeleccionada.id}";
 
                     ConsumoServicios servicios = new ConsumoServicios(Url);
                     var exito = await servicios.Eliminar(deleteUrl);
@@ -187,13 +185,13 @@ namespace TiendaPC.ViewModels
             {
                 if (ComputadoraSeleccionada != null)
                 {
-                    ComputadoraSeleccionada.Nombre = Nombre;
-                    ComputadoraSeleccionada.Marca = Marca;
-                    ComputadoraSeleccionada.Precio = Precio;
-                    ComputadoraSeleccionada.Stock = Stock;
+                    ComputadoraSeleccionada.nombre = Nombre;
+                    ComputadoraSeleccionada.marca = Marca;
+                    ComputadoraSeleccionada.precio = Precio;
+                    ComputadoraSeleccionada.stock = Stock;
 
                     ConsumoServicios servicios = new ConsumoServicios(Url);
-                    var updateUrl = $"{Url}/computadoras/{ComputadoraSeleccionada.Id}";
+                    var updateUrl = $"{Url}/computadoras/{ComputadoraSeleccionada.id}";
                     var exito = await servicios.ActualizarComputadora(updateUrl, ComputadoraSeleccionada);
 
                     if (exito)
@@ -228,11 +226,11 @@ namespace TiendaPC.ViewModels
             try
             {
                 ConsumoServicios servicios = new ConsumoServicios(url);
-                var response = await servicios.Get<Response<Computadora>>();
+                var response = await servicios.Get<ComputadoraResponse>();
 
                 Computadoras.Clear();
 
-                foreach (Computadora x in response.Items)
+                foreach (Computadora x in response.items)
                 {
                     Computadoras.Add(x);
                 }
@@ -250,4 +248,7 @@ namespace TiendaPC.ViewModels
         }
     }
 }
+
+
+
 

@@ -6,27 +6,28 @@ namespace TiendaPC.Models
 {
     public class Computadora
     {
-        public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string Marca { get; set; }
-        public decimal Precio { get; set; }
-        public int Stock { get; set; }
+        public int id { get; set; }
+        public string nombre { get; set; }
+        public string marca { get; set; }
+        public decimal precio { get; set; }
+        public int stock { get; set; }
     }
 
-    public class ComputadorasLink
+    public class ComputadoraLink
     {
-        public string Rel { get; set; }
-        public string Href { get; set; }
+        public string rel { get; set; }
+        public string href { get; set; }
     }
 
-    public class Response<T>
+    public class ComputadoraResponse
     {
-        public List<T> Items { get; set; }
-        public bool HasMore { get; set; }
-        public int Limit { get; set; }
-        public int Offset { get; set; }
-        public int Count { get; set; }
-        public List<Link> Links { get; set; }
+        public List<Computadora> items { get; set; }
+        public bool hasMore { get; set; }
+        public int limit { get; set; }
+        public int offset { get; set; }
+        public int count { get; set; }
+        public List<ComputadoraLink> links { get; set; }
     }
 }
+
 

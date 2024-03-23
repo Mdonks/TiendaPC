@@ -102,16 +102,15 @@ namespace TiendaPC.Models
         }
 
         // Función para agregar una computadora
-        public async Task<bool> AgregarComputadora(string addUrl, Computadora computadora)
+        public async Task<bool> AgregarComputadora(string addUrl, string nombre, string marca, decimal precio, int stock)
         {
             try
             {
-                var json = JsonConvert.SerializeObject(computadora);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var url = $"{addUrl}?nombre={nombre}&marca={marca}&precio={precio}&stock={stock}";
 
                 using (var httpClient = new HttpClient())
                 {
-                    var response = await httpClient.PostAsync(addUrl, content);
+                    var response = await httpClient.PostAsync(url, null);
 
                     return response.IsSuccessStatusCode;
                 }
@@ -123,12 +122,13 @@ namespace TiendaPC.Models
             }
         }
 
+
         // Función para actualizar una computadora
         public async Task<bool> ActualizarComputadora(string updateUrl, Computadora computadora)
         {
             try
             {
-                string url = $"{updateUrl}/{computadora.Id}";
+                string url = $"{updateUrl}/{computadora.id}";
 
                 var json = JsonConvert.SerializeObject(computadora);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -146,6 +146,7 @@ namespace TiendaPC.Models
                 return false;
             }
         }
+
     }
 }
 
