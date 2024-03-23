@@ -1,26 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:TiendaPC.ViewModels"
              x:Class="TiendaPC.pedidos" Title="Pedidos">
     <ContentPage.Content>
         <StackLayout Padding="10">
             <Label Text="Lista de Pedidos" FontSize="Large" HorizontalOptions="Center" Margin="0,10,0,10" />
+            <!-- Picker para seleccionar Usuario -->
+            <Picker Title="Seleccionar Usuario" ItemsSource="{Binding Usuarios}" SelectedItem="{Binding SelectedUser}">
+                <Picker.ItemDisplayBinding>
+                    <Binding Path="Nombre" />
+                </Picker.ItemDisplayBinding>
+            </Picker>
 
-            <ListView x:Name="pedidosListView" IsVisible="{Binding TienePedidos}" ItemsSource="{Binding Pedidos}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <StackLayout Padding="10">
-                                <Label Text="{Binding id}" FontAttributes="Bold" />
-                                <Label Text="{Binding fecha}" />
-                                <Label Text="{Binding total, StringFormat='Total: ${0:N2}'}" />
-                            </StackLayout>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <!-- Mostrar nombre de usuario seleccionado -->
+            <Label Text="{Binding SelectedUser?.Nombre}" FontAttributes="Bold" IsVisible="{Binding SelectedUser, Converter={StaticResource IsNotNullConverter}}" />
+
+            <!-- Picker para seleccionar Computadora -->
+            <Picker Title="Seleccionar Computadora" ItemsSource="{Binding Computadoras}" SelectedItem="{Binding SelectedComputer}">
+                <Picker.ItemDisplayBinding>
+                    <Binding Path="Nombre" />
+                </Picker.ItemDisplayBinding>
+            </Picker>
+
+            <!-- Mostrar nombre de computadora seleccionada -->
+            <Label Text="{Binding SelectedComputer?.Nombre}" FontAttributes="Bold" IsVisible="{Binding SelectedComputer, Converter={StaticResource IsNotNullConverter}}" />
+
+
+            <!-- Campo para ingresar la dirección -->
+            <Entry Placeholder="Dirección de entrega" Text="{Binding Address}" />
+
+            <!-- Botón para agregar pedido -->
+            <Button Text="Agregar Pedido" Command="{Binding AgregarPedidoCommand}" />
 
             <Label Text="No hay pedidos disponibles" IsVisible="{Binding NoHayPedidos}" FontAttributes="Italic" HorizontalOptions="Center" Margin="0,20,0,0" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
+
+
+
+
+
+

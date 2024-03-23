@@ -19,12 +19,13 @@ namespace TiendaPC.Models
             url = newUrl;
         }
 
-        public async Task<T> Get<T>()
+        public async Task<T> Get<T>(string specificUrl = null)
         {
             try
             {
                 HttpClient client = new HttpClient();
-                var response = await client.GetAsync(url);
+                string requestUrl = string.IsNullOrEmpty(specificUrl) ? url : specificUrl;
+                var response = await client.GetAsync(requestUrl);
 
                 if (response.StatusCode == System.Net.HttpStatusCode.OK && response != null)
                 {
