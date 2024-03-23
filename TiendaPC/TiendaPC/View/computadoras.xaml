@@ -1,30 +1,60 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="TiendaPC.computadoras" Title="Computadora">
+             x:Class="TiendaPC.computadoras" Title="Computadora"
+             xmlns:vm="clr-namespace:TiendaPC.ViewModels">
+    <ContentPage.BindingContext>
+        <vm:ComputadoraViewModel></vm:ComputadoraViewModel>
+    </ContentPage.BindingContext>
     <ContentPage.Content>
         <StackLayout Padding="10">
-            <Entry x:Name="nombreEntry" Placeholder="Nombre" />
-            <Entry x:Name="marcaEntry" Placeholder="Marca" />
-            <Entry x:Name="precioEntry" Placeholder="Precio" Keyboard="Numeric" />
-            <Entry x:Name="stockEntry" Placeholder="Stock" Keyboard="Numeric" />
+            <Entry x:Name="nombreEntry" Placeholder="Nombre" Text="{Binding Nombre}" />
+            <Entry x:Name="marcaEntry" Placeholder="Marca" Text="{Binding Marca}" />
+            <Entry x:Name="precioEntry" Placeholder="Precio" Text="{Binding Precio}" Keyboard="Numeric" />
+            <Entry x:Name="stockEntry" Placeholder="Stock" Text="{Binding Stock}" Keyboard="Numeric" />
 
-            <Button Text="Guardar"/>
+            <Button Text="Guardar" Command="{Binding AgregarComputadoraCommand}"/>
+            <Button Text="Actualizar" Command="{Binding ActualizarComputadoraCommand}" />
+            <Button Text="Eliminar" Command="{Binding EliminarComputadoraCommand}" />
 
-            <ListView x:Name="computadorasListView" ItemsSource="{Binding Computadoras}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <StackLayout Padding="10">
-                                <Label Text="{Binding nombre}" FontAttributes="Bold" />
-                                <Label Text="{Binding marca}" />
-                                <Label Text="{Binding precio, StringFormat='Precio: ${0:N2}'}" />
-                                <Label Text="{Binding stock, StringFormat='Stock: {0} unidades'}" />
-                            </StackLayout>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+
+            <Label Text="Lista de Computadoras" FontSize="20" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" Margin="0,10,0,10" />
+            <ScrollView Orientation="Horizontal">
+                <ListView x:Name="computadorasListView" 
+              ItemsSource="{Binding Computadoras}" 
+              HeightRequest="400" 
+              VerticalOptions="FillAndExpand"
+              SeparatorVisibility="None"
+              ItemSelected="OnItemSelected">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal" Padding="10">
+                                    <Label Text="{Binding nombre}" 
+                               FontAttributes="Bold" 
+                               FontSize="Medium" 
+                               TextColor="white"
+                               VerticalOptions="Start" />
+                                    <Label Text="{Binding marca}" 
+                               FontSize="Small" 
+                               TextColor="#999999"
+                               VerticalOptions="CenterAndExpand" />
+                                    <Label Text="{Binding precio, StringFormat='Precio: ${0:N2}'}" 
+                               FontSize="Small" 
+                               TextColor="#999999"
+                               VerticalOptions="CenterAndExpand" />
+                                    <Label Text="{Binding stock, StringFormat='Stock: {0} unidades'}" 
+                               FontSize="Small" 
+                               TextColor="#999999"
+                               VerticalOptions="CenterAndExpand" />
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ScrollView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
+
+

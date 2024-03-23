@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using TiendaPC.Models; // Asegúrate de tener esta referencia para usar el modelo Computadora
 
 namespace TiendaPC.Models
 {
@@ -15,13 +16,11 @@ namespace TiendaPC.Models
 
         public ConsumoServicios(string newUrl)
         {
-
             url = newUrl;
         }
 
         public async Task<T> Get<T>()
         {
-
             try
             {
                 HttpClient client = new HttpClient();
@@ -29,12 +28,9 @@ namespace TiendaPC.Models
 
                 if (response.StatusCode == System.Net.HttpStatusCode.OK && response != null)
                 {
-
                     var jsonString = await response.Content.ReadAsStringAsync();
                     return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(jsonString);
-
                 }
-
             }
             catch (Exception err)
             {
@@ -63,7 +59,6 @@ namespace TiendaPC.Models
                 return false;
             }
         }
-
 
         public async Task<bool> ActualizarUsuario(string updateUrl, USUARIO usuario)
         {
@@ -106,6 +101,51 @@ namespace TiendaPC.Models
             }
         }
 
+        // Función para agregar una computadora
+        public async Task<bool> AgregarComputadora(string addUrl, Computadora computadora)
+        {
+            try
+            {
+                var json = JsonConvert.SerializeObject(computadora);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
+                using (var httpClient = new HttpClient())
+                {
+                    var response = await httpClient.PostAsync(addUrl, content);
+
+                    return response.IsSuccessStatusCode;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error al agregar computadora: " + ex.Message);
+                return false;
+            }
+        }
+
+        // Función para actualizar una computadora
+        public async Task<bool> ActualizarComputadora(string updateUrl, Computadora computadora)
+        {
+            try
+            {
+                string url = $"{updateUrl}/{computadora.Id}";
+
+                var json = JsonConvert.SerializeObject(computadora);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                using (var httpClient = new HttpClient())
+                {
+                    var response = await httpClient.PutAsync(url, content);
+
+                    return response.IsSuccessStatusCode;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error al actualizar computadora: " + ex.Message);
+                return false;
+            }
+        }
     }
 }
+
