@@ -125,7 +125,6 @@ namespace TiendaPC.ViewModels
             }
         }
 
-
         private async Task EliminarUsuario()
         {
             string Url = "https://apex.oracle.com/pls/apex/smeargle1628/api_tienda_pc/usuarios";
@@ -162,7 +161,6 @@ namespace TiendaPC.ViewModels
                 await App.Current.MainPage.DisplayAlert("Error", "Ha ocurrido un error al eliminar el usuario", "Aceptar");
             }
         }
-
 
         private async Task ActualizarUsuario()
         {

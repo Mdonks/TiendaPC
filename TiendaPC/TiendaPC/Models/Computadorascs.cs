@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TiendaPC.Models
 {
-    public class Computadora
+    public class COMPUTADORA
     {
         public int id { get; set; }
         public string nombre { get; set; }
@@ -13,20 +13,14 @@ namespace TiendaPC.Models
         public int stock { get; set; }
     }
 
-    public class ComputadoraLink
+    public class COMPUTADORARESPONSE
     {
-        public string rel { get; set; }
-        public string href { get; set; }
-    }
-
-    public class ComputadoraResponse
-    {
-        public List<Computadora> items { get; set; }
+        public List<COMPUTADORA> items { get; set; }
         public bool hasMore { get; set; }
         public int limit { get; set; }
         public int offset { get; set; }
         public int count { get; set; }
-        public List<ComputadoraLink> links { get; set; }
+        public List<Link> links { get; set; }
     }
 }
 

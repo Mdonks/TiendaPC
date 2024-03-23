@@ -13,19 +13,20 @@ namespace TiendaPC.ViewModels
 {
     public class ComputadoraViewModel : INotifyPropertyChanged
     {
-        public ObservableCollection<Computadora> Computadoras { get; set; } = new ObservableCollection<Computadora>();
+        public ObservableCollection<COMPUTADORA> Computadoras { get; set; } = new ObservableCollection<COMPUTADORA>();
         public ICommand AgregarComputadoraCommand { get; }
         public ICommand EliminarComputadoraCommand { get; }
         public ICommand ActualizarComputadoraCommand { get; }
 
-        private Computadora _computadoraSeleccionada;
-        public Computadora ComputadoraSeleccionada
+        private COMPUTADORA _computadoraSeleccionada;
+        public COMPUTADORA ComputadoraSeleccionada
         {
             get => _computadoraSeleccionada;
             set
             {
                 _computadoraSeleccionada = value;
-                OnPropertyChanged();
+                var args = new PropertyChangedEventArgs(nameof(ComputadoraSeleccionada));
+                PropertyChanged?.Invoke(this, args);
             }
         }
 
@@ -36,7 +37,8 @@ namespace TiendaPC.ViewModels
             set
             {
                 _nombre = value;
-                OnPropertyChanged();
+                var args = new PropertyChangedEventArgs(nameof(Nombre));
+                PropertyChanged?.Invoke(this, args);
             }
         }
 
@@ -47,7 +49,8 @@ namespace TiendaPC.ViewModels
             set
             {
                 _marca = value;
-                OnPropertyChanged();
+                var args = new PropertyChangedEventArgs(nameof(Marca));
+                PropertyChanged?.Invoke(this, args);
             }
         }
 
@@ -58,7 +61,8 @@ namespace TiendaPC.ViewModels
             set
             {
                 _precio = value;
-                OnPropertyChanged();
+                var args = new PropertyChangedEventArgs(nameof(Precio));
+                PropertyChanged?.Invoke(this, args);
             }
         }
 
@@ -69,7 +73,8 @@ namespace TiendaPC.ViewModels
             set
             {
                 _stock = value;
-                OnPropertyChanged();
+                var args = new PropertyChangedEventArgs(nameof(Stock));
+                PropertyChanged?.Invoke(this, args);
             }
         }
 
@@ -78,7 +83,7 @@ namespace TiendaPC.ViewModels
             if (e.SelectedItem == null)
                 return;
 
-            ComputadoraSeleccionada = (Computadora)e.SelectedItem;
+            ComputadoraSeleccionada = (COMPUTADORA)e.SelectedItem;
 
             Nombre = ComputadoraSeleccionada.nombre;
             Marca = ComputadoraSeleccionada.marca;
@@ -90,11 +95,10 @@ namespace TiendaPC.ViewModels
 
         public ComputadoraViewModel()
         {
-            Computadoras = new ObservableCollection<Computadora>();
+            Computadoras = new ObservableCollection<COMPUTADORA>();
             AgregarComputadoraCommand = new Command(async () => await AgregarComputadora());
             EliminarComputadoraCommand = new Command(async () => await EliminarComputadora());
             ActualizarComputadoraCommand = new Command(async () => await ActualizarComputadora());
-            CargarComputadoras();
         }
 
         private async Task AgregarComputadora()
@@ -106,7 +110,7 @@ namespace TiendaPC.ViewModels
                 string addUrl = $"{Url}/computadoras";
 
                 ConsumoServicios servicios = new ConsumoServicios(Url);
-                var computadora = new Computadora
+                var computadora = new COMPUTADORA
                 {
                     nombre = Nombre,
                     marca = Marca,
@@ -147,7 +151,7 @@ namespace TiendaPC.ViewModels
             {
                 if (ComputadoraSeleccionada != null)
                 {
-                    string deleteUrl = $"{Url}/{ComputadoraSeleccionada.id}";
+                    string deleteUrl = $"{Url}?id={ComputadoraSeleccionada.id}";
 
                     ConsumoServicios servicios = new ConsumoServicios(Url);
                     var exito = await servicios.Eliminar(deleteUrl);
@@ -191,7 +195,7 @@ namespace TiendaPC.ViewModels
                     ComputadoraSeleccionada.stock = Stock;
 
                     ConsumoServicios servicios = new ConsumoServicios(Url);
-                    var updateUrl = $"{Url}/computadoras/{ComputadoraSeleccionada.id}";
+                    var updateUrl = $"{Url}/computadoras";
                     var exito = await servicios.ActualizarComputadora(updateUrl, ComputadoraSeleccionada);
 
                     if (exito)
@@ -219,20 +223,30 @@ namespace TiendaPC.ViewModels
             }
         }
 
-        private async Task CargarComputadoras()
+        public async Task CargarComputadoras()
         {
             string url = "https://apex.oracle.com/pls/apex/smeargle1628/api_tienda_pc/computadoras";
 
+            await Task.Delay(100);
             try
             {
                 ConsumoServicios servicios = new ConsumoServicios(url);
-                var response = await servicios.Get<ComputadoraResponse>();
+                var response = await servicios.Get<COMPUTADORARESPONSE>();
 
                 Computadoras.Clear();
 
-                foreach (Computadora x in response.items)
+                foreach (COMPUTADORA x in response.items)
                 {
-                    Computadoras.Add(x);
+                    COMPUTADORA temp = new COMPUTADORA()
+                    { 
+                        id = x.id,
+                        nombre = x.nombre,
+                        marca = x.marca,
+                        precio = x.precio,
+                        stock = x.stock,
+                    };
+
+                    Computadoras.Add(temp);
                 }
             }
             catch (Exception ex)

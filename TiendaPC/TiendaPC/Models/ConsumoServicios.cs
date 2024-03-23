@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using TiendaPC.Models; // Asegúrate de tener esta referencia para usar el modelo Computadora
+using TiendaPC.Models;
 
 namespace TiendaPC.Models
 {
@@ -124,14 +124,14 @@ namespace TiendaPC.Models
 
 
         // Función para actualizar una computadora
-        public async Task<bool> ActualizarComputadora(string updateUrl, Computadora computadora)
+        public async Task<bool> ActualizarComputadora(string updateUrl, COMPUTADORA computadora)
         {
             try
             {
-                string url = $"{updateUrl}/{computadora.id}";
+                string url = $"{updateUrl}?id={computadora.id}";
 
                 var json = JsonConvert.SerializeObject(computadora);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
                 using (var httpClient = new HttpClient())
                 {

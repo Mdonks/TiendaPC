@@ -22,6 +22,12 @@ namespace TiendaPC
             BindingContext = viewModel;
         }
 
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await viewModel.CargarComputadoras();
+        }
+
         private async void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             viewModel.OnItemSelected(sender, e);

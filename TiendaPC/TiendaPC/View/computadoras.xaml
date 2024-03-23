@@ -23,7 +23,7 @@
                       ItemsSource="{Binding Computadoras}" 
                       VerticalOptions="FillAndExpand"
                       SeparatorVisibility="None"
-                      SelectedItem="{Binding ComputadoraSeleccionada}">
+                      ItemSelected="OnItemSelected">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
