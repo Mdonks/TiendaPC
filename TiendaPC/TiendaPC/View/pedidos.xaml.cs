@@ -17,15 +17,24 @@ namespace TiendaPC
         public pedidos()
         {
             InitializeComponent();
-            BindingContext = viewModel = new PedidosVM();
+            viewModel = new PedidosVM();
+            BindingContext = viewModel;
         }
 
-        private void AgregarPedido_Clicked(object sender, EventArgs e)
+        private async void AgregarPedido_Clicked(object sender, EventArgs e)
         {
-            var selectedUser = viewModel.SelectedUser;
-            var selectedComputer = viewModel.SelectedComputer;
-            var address = viewModel.Address;
+            // Verificar si se ha seleccionado un usuario y una computadora
+            if (viewModel.SelectedUser == null || viewModel.SelectedComputer == null)
+            {
+                await DisplayAlert("Alerta", "Por favor, seleccione un usuario y una computadora", "Aceptar");
+                return;
+            }
+
+            // Llamar al método para ingresar el pedido
+            await viewModel.IngresarPedido();
         }
     }
 }
+
+
 

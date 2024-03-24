@@ -41,6 +41,27 @@ namespace TiendaPC.Models
             return default(T);
         }
 
+        // Método para agregar un pedido
+        public async Task<bool> AgregarPedido(string addUrl, int usuarioId, int computadoraId, string direccion)
+        {
+            try
+            {
+                var url = $"{addUrl}?usuario={usuarioId}&computadora={computadoraId}&direccion={direccion}";
+
+                using (var httpClient = new HttpClient())
+                {
+                    var response = await httpClient.PostAsync(url, null);
+
+                    return response.IsSuccessStatusCode;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error al agregar pedido: " + ex.Message);
+                return false;
+            }
+        }
+
         public async Task<bool> AgregarUsuario(string addUrl, string nombre, string direccion, string correo)
         {
             try
