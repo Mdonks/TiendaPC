@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 public class Pedidos
 {
@@ -13,6 +11,11 @@ public class Pedidos
     {
         return $"Pedido #{Id}";
     }
+}
+
+public class PedidosResponse
+{
+    public List<Pedidos> Items { get; set; }
 }
 
 

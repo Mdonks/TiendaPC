@@ -144,6 +144,30 @@ namespace TiendaPC.Models
             }
         }
 
+        // Método para actualizar un pedido
+        public async Task<bool> ActualizarPedido(string updateUrl, Pedidos pedido)
+        {
+            try
+            {
+                string url = $"{updateUrl}?id={pedido.Id}";
+
+                var json = JsonConvert.SerializeObject(pedido);
+                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+                using (var httpClient = new HttpClient())
+                {
+                    var response = await httpClient.PutAsync(url, content);
+
+                    return response.IsSuccessStatusCode;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error al actualizar pedido: " + ex.Message);
+                return false;
+            }
+        }
+
 
         // Función para actualizar una computadora
         public async Task<bool> ActualizarComputadora(string updateUrl, COMPUTADORA computadora)
@@ -171,4 +195,5 @@ namespace TiendaPC.Models
 
     }
 }
+
 

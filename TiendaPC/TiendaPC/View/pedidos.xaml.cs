@@ -33,8 +33,34 @@ namespace TiendaPC
             // Llamar al método para ingresar el pedido
             await viewModel.IngresarPedido();
         }
+
+        private async void EliminarPedido_Clicked(object sender, EventArgs e)
+        {
+            // Llamar al método para eliminar el pedido seleccionado
+            await viewModel.EliminarPedido();
+        }
+
+        private async void ActualizarPedido_Clicked(object sender, EventArgs e)
+        {
+            // Llamar al método para actualizar el pedido seleccionado
+            await viewModel.ActualizarPedido();
+        }
+
+        private async void ListView_ItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            // Obtener el pedido seleccionado
+            var selectedPedido = e.Item as Pedidos;
+
+            // Asignar el pedido seleccionado al ViewModel
+            viewModel.SelectedPedido = selectedPedido;
+
+            // Aquí puedes mostrar un mensaje de confirmación o realizar otras acciones
+        }
     }
 }
+
+
+
 
 
 
