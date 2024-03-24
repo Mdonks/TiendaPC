@@ -5,10 +5,10 @@
              x:Class="TiendaPC.pedidos" Title="Pedidos">
     <ContentPage.BindingContext>
         <local:PedidosVM />
-        <!-- Aquí se está inicializando el ViewModel -->
     </ContentPage.BindingContext>
     <ContentPage.Content>
         <StackLayout Padding="10">
+            <Label Text="Lista de Pedidos" FontSize="Large" HorizontalOptions="Center" Margin="0,10,0,10" />
             <!-- Picker para seleccionar Usuario -->
             <Picker Title="Seleccionar Usuario" ItemsSource="{Binding Usuarios}" SelectedItem="{Binding SelectedUser}">
                 <Picker.ItemDisplayBinding>
@@ -17,7 +17,7 @@
             </Picker>
 
             <!-- Mostrar nombre de usuario seleccionado -->
-            <Label Text="{Binding SelectedUser?.nombre}" FontAttributes="Bold" IsVisible="{Binding SelectedUser, Converter={StaticResource IsNotNullConverter}}" />
+            <Label Text="{Binding SelectedUser?.Nombre}" FontAttributes="Bold" IsVisible="{Binding SelectedUser, Converter={StaticResource IsNotNullConverter}}" />
 
             <!-- Picker para seleccionar Computadora -->
             <Picker Title="Seleccionar Computadora" ItemsSource="{Binding Computadoras}" SelectedItem="{Binding SelectedComputer}">
@@ -26,7 +26,17 @@
                 </Picker.ItemDisplayBinding>
             </Picker>
             <!-- Mostrar nombre de computadora seleccionada -->
-            <Label Text="{Binding SelectedComputer?.nombre}" FontAttributes="Bold" IsVisible="{Binding SelectedComputer, Converter={StaticResource IsNotNullConverter}}" />
+            <Label Text="{Binding SelectedComputer?.Nombre}" FontAttributes="Bold" IsVisible="{Binding SelectedComputer, Converter={StaticResource IsNotNullConverter}}" />
+
+
+            <!-- Campo para ingresar la dirección -->
+            <Entry Placeholder="Dirección de entrega" Text="{Binding Address}" />
+
+            <!-- Botón para agregar pedido -->
+            <Button Text="Agregar Pedido" Command="{Binding IngresarPedidoCommand}" />
+
+            <Label Text="No hay pedidos disponibles" IsVisible="{Binding NoHayPedidos}" FontAttributes="Italic" HorizontalOptions="Center" Margin="0,20,0,0" />
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>
 
